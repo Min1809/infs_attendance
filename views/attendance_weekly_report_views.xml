@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Weekly Attendance Report Interactive Matrix Viewer Form View -->
+    <!-- (Restricted exclusively to Attendance Administrators)        -->
+    <!-- ============================================================ -->
+    <record id="view_infs_attendance_weekly_report_viewer_form" model="ir.ui.view">
+        <field name="name">infs.attendance.weekly.report.viewer.form</field>
+        <field name="model">infs.attendance.weekly.report.viewer</field>
+        <field name="groups_id" eval="[(4, ref('hr_attendance.group_hr_attendance_manager'))]"/>
+        <field name="arch" type="xml">
+            <form string="Weekly Attendance Summary" create="false" edit="true" delete="false">
+                <header>
+                    <button name="action_prev_week" string="Previous Week" icon="fa-chevron-left" type="object" class="btn-secondary"/>
+                    <button name="action_current_week" string="Current Week" icon="fa-calendar" type="object" class="btn-primary"/>
+                    <button name="action_next_week" string="Next Week" icon="fa-chevron-right" type="object" class="btn-secondary"/>
+                    <button name="action_refresh" string="Refresh Data" icon="fa-refresh" type="object" class="btn-link"/>
+                </header>
+                <sheet>
+                    <!-- Top Title & Quick Filters -->
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-6">
+                            <h2 style="color: #714B67; margin: 0; font-weight: 700;">
+                                Weekly Attendance Digest
+                            </h2>
+                            <p class="text-muted mb-0" style="font-size: 13px;">
+                                Week: <strong><field name="week_label" class="oe_inline" readonly="1"/></strong>
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-end d-flex justify-content-end align-items-center gap-2">
+                            <span class="text-muted fw-bold">Select Date:</span>
+                            <field name="target_date" class="oe_inline" style="max-width: 140px;"/>
+                            <span class="text-muted fw-bold ms-2">Department:</span>
+                            <field name="department_id" class="oe_inline" placeholder="All Departments" style="max-width: 180px;"/>
+                        </div>
+                    </div>
+
+                    <!-- Quick Summary KPI Cards matching email design -->
+                    <!-- <div class="row mb-3 g-2">
+                        <div class="col-md-4">
+                            <div style="background-color: #e8f0fe; border-radius: 6px; padding: 12px; text-align: center; border-left: 4px solid #1a73e8;">
+                                <span style="font-size: 11px; color: #555555; text-transform: uppercase; font-weight: bold;">Total Staff</span><br/>
+                                <strong style="font-size: 20px; color: #714B67;"><field name="total_employees" readonly="1"/></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div style="background-color: #e6f4ea; border-radius: 6px; padding: 12px; text-align: center; border-left: 4px solid #137333;">
+                                <span style="font-size: 11px; color: #137333; text-transform: uppercase; font-weight: bold;">Today Checked In</span><br/>
+                                <strong style="font-size: 20px; color: #137333;"><field name="today_checked_in" readonly="1"/></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div style="background-color: #fce8e6; border-radius: 6px; padding: 12px; text-align: center; border-left: 4px solid #c5221f;">
+                                <span style="font-size: 11px; color: #c5221f; text-transform: uppercase; font-weight: bold;">Missed Checkout (Yesterday)</span><br/>
+                                <strong style="font-size: 20px; color: #c5221f;"><field name="yesterday_missed" readonly="1"/></strong>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <!-- 3-Tier Weekly Matrix Table -->
+                    <field name="html_table" widget="html" readonly="1" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Server Action for Interactive Weekly Viewer -->
+    <record id="action_infs_attendance_weekly_report_viewer_server" model="ir.actions.server">
+        <field name="name">Weekly Attendance Summary (Sun - Sat)</field>
+        <field name="model_id" ref="model_infs_attendance_weekly_report_viewer"/>
+        <field name="groups_id" eval="[(4, ref('hr_attendance.group_hr_attendance_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+action = model.action_open_weekly_viewer()
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Raw Tree View & Action for infs.attendance.weekly.report     -->
+    <!-- ============================================================ -->
+    <record id="view_infs_attendance_weekly_report_tree" model="ir.ui.view">
+        <field name="name">infs.attendance.weekly.report.tree</field>
+        <field name="model">infs.attendance.weekly.report</field>
+        <field name="groups_id" eval="[(4, ref('hr_attendance.group_hr_attendance_manager'))]"/>
+        <field name="arch" type="xml">
+            <tree string="Weekly Attendance Summary" class="o_infs_weekly_grid" create="false" edit="false" delete="false" default_order="department_id, employee_id">
+                <header>
+                    <button name="action_prev_week" string="Previous Week" icon="fa-chevron-left" type="object" class="btn-secondary"/>
+                    <button name="action_current_week" string="Current Week" icon="fa-calendar" type="object" class="btn-primary"/>
+                    <button name="action_next_week" string="Next Week" icon="fa-chevron-right" type="object" class="btn-secondary"/>
+                    <button name="action_refresh_current_view" string="Refresh" icon="fa-refresh" type="object" class="btn-link"/>
+                </header>
+                <field name="employee_id" widget="many2one_avatar_user"/>
+                <field name="department_id" optional="hide"/>
+
+                <!-- Total Weekly Hours -->
+                <field name="total_hours" string="Weekly Total (h)" sum="Total Weekly Hours" class="text-start" decoration-bf="1" decoration-success="total_hours >= 45.0"/>
+                <field name="week_start_date" string="From (Sun)" optional="hide"/>
+                <field name="week_end_date" string="To (Sat)" optional="hide"/>
+
+                <!-- Sunday -->
+                <field name="sun_in" string="Sun IN" optional="show"/>
+                <field name="sun_out" string="Sun OUT" optional="show"/>
+                <field name="sun_hours" string="Sun (h)" class="text-start" optional="show" sum="Total Sun Hours" decoration-success="sun_hours >= 9.5" decoration-danger="sun_hours &gt; 0 and sun_hours &lt; 8.0"/>
+
+                <!-- Monday -->
+                <field name="mon_in" string="Mon IN" optional="show"/>
+                <field name="mon_out" string="Mon OUT" optional="show"/>
+                <field name="mon_hours" string="Mon (h)" class="text-start" optional="show" sum="Total Mon Hours" decoration-success="mon_hours >= 9.5" decoration-danger="mon_hours &gt; 0 and mon_hours &lt; 8.0"/>
+
+                <!-- Tuesday -->
+                <field name="tue_in" string="Tue IN" optional="show"/>
+                <field name="tue_out" string="Tue OUT" optional="show"/>
+                <field name="tue_hours" string="Tue (h)" class="text-start" optional="show" sum="Total Tue Hours" decoration-success="tue_hours >= 9.5" decoration-danger="tue_hours &gt; 0 and tue_hours &lt; 8.0"/>
+
+                <!-- Wednesday -->
+                <field name="wed_in" string="Wed IN" optional="show"/>
+                <field name="wed_out" string="Wed OUT" optional="show"/>
+                <field name="wed_hours" string="Wed (h)" class="text-start" optional="show" sum="Total Wed Hours" decoration-success="wed_hours >= 9.5" decoration-danger="wed_hours &gt; 0 and wed_hours &lt; 8.0"/>
+
+                <!-- Thursday -->
+                <field name="thu_in" string="Thu IN" optional="show"/>
+                <field name="thu_out" string="Thu OUT" optional="show"/>
+                <field name="thu_hours" string="Thu (h)" class="text-start" optional="show" sum="Total Thu Hours" decoration-success="thu_hours >= 9.5" decoration-danger="thu_hours &gt; 0 and thu_hours &lt; 8.0"/>
+
+                <!-- Friday -->
+                <field name="fri_in" string="Fri IN" optional="show"/>
+                <field name="fri_out" string="Fri OUT" optional="show"/>
+                <field name="fri_hours" string="Fri (h)" class="text-start" optional="show" sum="Total Fri Hours" decoration-success="fri_hours >= 9.5" decoration-danger="fri_hours &gt; 0 and fri_hours &lt; 8.0"/>
+
+                <!-- Saturday -->
+                <field name="sat_in" string="Sat IN" optional="show"/>
+                <field name="sat_out" string="Sat OUT" optional="show"/>
+                <field name="sat_hours" string="Sat (h)" class="text-start" optional="show" sum="Total Sat Hours" decoration-success="sat_hours >= 9.5" decoration-danger="sat_hours &gt; 0 and sat_hours &lt; 8.0"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Weekly Attendance Report Search View -->
+    <record id="view_infs_attendance_weekly_report_search" model="ir.ui.view">
+        <field name="name">infs.attendance.weekly.report.search</field>
+        <field name="model">infs.attendance.weekly.report</field>
+        <field name="groups_id" eval="[(4, ref('hr_attendance.group_hr_attendance_manager'))]"/>
+        <field name="arch" type="xml">
+            <search string="Search Weekly Attendance">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="week_start_date"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_department" string="Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_by_week" string="Week" context="{'group_by': 'week_start_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window Action for Weekly Attendance Report List -->
+    <record id="action_infs_attendance_weekly_report_window" model="ir.actions.act_window">
+        <field name="name">Weekly Attendance Summary (Sun - Sat)</field>
+        <field name="res_model">infs.attendance.weekly.report</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_infs_attendance_weekly_report_tree"/>
+        <field name="search_view_id" ref="view_infs_attendance_weekly_report_search"/>
+        <field name="groups_id" eval="[(4, ref('hr_attendance.group_hr_attendance_manager'))]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No weekly attendance data available.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item in Attendances Module -> Points to Interactive Matrix Viewer -->
+    <menuitem id="menu_infs_attendance_weekly_report"
+              name="Weekly Summary (Sun - Sat)"
+              parent="hr_attendance.menu_hr_attendance_root"
+              sequence="12"
+              groups="hr_attendance.group_hr_attendance_manager"
+              action="action_infs_attendance_weekly_report_viewer_server"/>
+</odoo>

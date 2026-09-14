@@ -1,0 +1,177 @@
+/* Custom styling for Weekly Attendance Grid Report in Odoo Tree View */
+.o_infs_weekly_grid table.o_list_table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1.5px solid #94a3b8 !important;
+}
+
+.o_infs_weekly_grid table.o_list_table th,
+.o_infs_weekly_grid table.o_list_table td {
+    border-right: 1px solid #cbd5e1 !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+    padding: 6px 8px !important;
+    text-align: left !important;
+    font-size: 12px !important;
+    vertical-align: middle !important;
+}
+
+/* Headers */
+.o_infs_weekly_grid table.o_list_table thead th {
+    background-color: #e2e8f0 !important;
+    color: #1e293b !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid #475569 !important;
+    border-right: 1px solid #94a3b8 !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+/* Force header flex container to row direction and space-between */
+.o_infs_weekly_grid table.o_list_table thead th,
+.o_infs_weekly_grid table.o_list_table thead th.o_column_sortable,
+.o_infs_weekly_grid table.o_list_table thead th.o_list_number_th {
+    text-align: left !important;
+    flex-direction: row !important;
+}
+
+.o_infs_weekly_grid table.o_list_table thead th > div,
+.o_infs_weekly_grid table.o_list_table thead th.d-flex {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Ensure all sort indicators / dropdown carets / icons in headers sit on the right while text is on the left */
+.o_infs_weekly_grid table.o_list_table thead th i,
+.o_infs_weekly_grid table.o_list_table thead th .o_sort_order,
+.o_infs_weekly_grid table.o_list_table thead th .dropdown-toggle,
+.o_infs_weekly_grid table.o_list_table thead th .o_dropdown_button,
+.o_infs_weekly_grid table.o_list_table thead th .o_dropdown {
+    float: right !important;
+    margin-left: auto !important;
+    display: inline-block !important;
+}
+
+/* Force ALL hours fields (sun_hours, mon_hours, tue_hours, etc.) and numbers to align left */
+.o_infs_weekly_grid table.o_list_table th[data-name$="_hours"],
+.o_infs_weekly_grid table.o_list_table th[name$="_hours"],
+.o_infs_weekly_grid table.o_list_table td[data-field$="_hours"],
+.o_infs_weekly_grid table.o_list_table td[name$="_hours"],
+.o_infs_weekly_grid table.o_list_table td[data-field$="_hours"] span,
+.o_infs_weekly_grid table.o_list_table td[name$="_hours"] span,
+.o_infs_weekly_grid table.o_list_table th[data-name="total_hours"],
+.o_infs_weekly_grid table.o_list_table th[name="total_hours"],
+.o_infs_weekly_grid table.o_list_table td[data-field="total_hours"],
+.o_infs_weekly_grid table.o_list_table td[name="total_hours"],
+.o_infs_weekly_grid table.o_list_table td[data-field="total_hours"] span,
+.o_infs_weekly_grid table.o_list_table td[name="total_hours"] span,
+.o_infs_weekly_grid table.o_list_table th.o_list_number_th,
+.o_infs_weekly_grid table.o_list_table tbody td.o_list_number,
+.o_infs_weekly_grid table.o_list_table tbody td.o_list_number span,
+.o_infs_weekly_grid table.o_list_table tfoot td.o_list_number,
+.o_infs_weekly_grid table.o_list_table tfoot td {
+    text-align: left !important;
+    justify-content: flex-start !important;
+}
+
+.o_infs_weekly_grid table.o_list_table td[data-field$="_hours"] > *,
+.o_infs_weekly_grid table.o_list_table td[name$="_hours"] > *,
+.o_infs_weekly_grid table.o_list_table td.o_list_number > * {
+    text-align: left !important;
+    display: inline-block !important;
+}
+
+/* Left-align Employee and Department */
+.o_infs_weekly_grid table.o_list_table td[data-field="employee_id"],
+.o_infs_weekly_grid table.o_list_table th[data-name="employee_id"] {
+    text-align: left !important;
+    font-weight: 600 !important;
+    min-width: 160px !important;
+}
+
+.o_infs_weekly_grid table.o_list_table td[data-field="department_id"],
+.o_infs_weekly_grid table.o_list_table th[data-name="department_id"] {
+    text-align: left !important;
+    min-width: 110px !important;
+}
+
+/* Strong vertical border after Department, Total Hours and each Day's group */
+.o_infs_weekly_grid th[data-name="department_id"],
+.o_infs_weekly_grid td[data-field="department_id"],
+.o_infs_weekly_grid th[data-name="total_hours"],
+.o_infs_weekly_grid td[data-field="total_hours"],
+.o_infs_weekly_grid th[data-name="sun_hours"],
+.o_infs_weekly_grid td[data-field="sun_hours"],
+.o_infs_weekly_grid th[data-name="mon_hours"],
+.o_infs_weekly_grid td[data-field="mon_hours"],
+.o_infs_weekly_grid th[data-name="tue_hours"],
+.o_infs_weekly_grid td[data-field="tue_hours"],
+.o_infs_weekly_grid th[data-name="wed_hours"],
+.o_infs_weekly_grid td[data-field="wed_hours"],
+.o_infs_weekly_grid th[data-name="thu_hours"],
+.o_infs_weekly_grid td[data-field="thu_hours"],
+.o_infs_weekly_grid th[data-name="fri_hours"],
+.o_infs_weekly_grid td[data-field="fri_hours"],
+.o_infs_weekly_grid th[data-name="sat_hours"],
+.o_infs_weekly_grid td[data-field="sat_hours"] {
+    border-right: 2px solid #475569 !important;
+}
+
+/* Highlight Total Hours column */
+.o_infs_weekly_grid th[data-name="total_hours"],
+.o_infs_weekly_grid td[data-field="total_hours"] {
+    background-color: #f3e8f2 !important; /* Light Purple */
+    color: #714B67 !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    min-width: 90px !important;
+}
+
+/* Subtle Alternating Backgrounds per Day to easily distinguish Day groups */
+.o_infs_weekly_grid th[data-name^="sun_"],
+.o_infs_weekly_grid td[data-field^="sun_"] {
+    background-color: #f1f5f9 !important; /* Sunday (Weekend) */
+}
+
+.o_infs_weekly_grid th[data-name^="mon_"],
+.o_infs_weekly_grid td[data-field^="mon_"] {
+    background-color: #ffffff !important; /* Monday */
+}
+
+.o_infs_weekly_grid th[data-name^="tue_"],
+.o_infs_weekly_grid td[data-field^="tue_"] {
+    background-color: #f8fafc !important; /* Tuesday */
+}
+
+.o_infs_weekly_grid th[data-name^="wed_"],
+.o_infs_weekly_grid td[data-field^="wed_"] {
+    background-color: #ffffff !important; /* Wednesday */
+}
+
+.o_infs_weekly_grid th[data-name^="thu_"],
+.o_infs_weekly_grid td[data-field^="thu_"] {
+    background-color: #f8fafc !important; /* Thursday */
+}
+
+.o_infs_weekly_grid th[data-name^="fri_"],
+.o_infs_weekly_grid td[data-field^="fri_"] {
+    background-color: #ffffff !important; /* Friday */
+}
+
+.o_infs_weekly_grid th[data-name^="sat_"],
+.o_infs_weekly_grid td[data-field^="sat_"] {
+    background-color: #f1f5f9 !important; /* Saturday (Weekend) */
+}
+
+/* Monospace font for time inputs */
+.o_infs_weekly_grid td[data-field$="_in"],
+.o_infs_weekly_grid td[data-field$="_out"] {
+    font-family: monospace, Arial, sans-serif !important;
+    font-size: 11px !important;
+}
+
+.o_infs_weekly_grid td[data-field$="_hours"] {
+    font-weight: 600 !important;
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_infs_attendance" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.infs.attendance</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="85"/>
+        <field name="inherit_id" ref="hr_attendance.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='hr_attendance']" position="inside">
+                <block title="Daily Attendance Email Digest" name="infs_daily_attendance_digest_block">
+                    <setting id="enable_attendance_daily_report_setting"
+                             string="Daily Email Digest"
+                             company_dependent="1"
+                             help="Automatically send a daily email report of yesterday's checkout and today's morning check-in to managers and HR.">
+                        <field name="enable_attendance_daily_report"/>
+                        <div class="content-group" invisible="not enable_attendance_daily_report">
+                            <div class="row mt16">
+                                <label for="attendance_report_recipient_ids" class="col-lg-3 o_light_label" string="Recipients"/>
+                                <field name="attendance_report_recipient_ids" widget="many2many_tags" class="col-lg-9" placeholder="Select users or partners..."/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="attendance_report_extra_emails" class="col-lg-3 o_light_label" string="Extra Emails"/>
+                                <field name="attendance_report_extra_emails" class="col-lg-9" placeholder="e.g. hr@company.com, manager@company.com"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="attendance_report_send_time" class="col-lg-3 o_light_label" string="Send Time"/>
+                                <div class="col-lg-9 d-flex align-items-center">
+                                    <field name="attendance_report_send_time" widget="float_time" class="oe_inline" style="width: 100px;"/>
+                                    <span class="text-muted ms-2">(e.g. 10:00 = 10:00 AM)</span>
+                                </div>
+                            </div>
+                            <div class="row mt8">
+                                <label for="attendance_report_tz" class="col-lg-3 o_light_label" string="Timezone"/>
+                                <field name="attendance_report_tz" class="col-lg-9"/>
+                            </div>
+                            <div class="mt16">
+                                <button name="action_send_test_daily_report"
+                                        type="object"
+                                        string="Send Test Report Now"
+                                        class="btn btn-secondary"
+                                        icon="fa-paper-plane"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

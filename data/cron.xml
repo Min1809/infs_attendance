@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Scheduled Action for Daily Attendance Email Digest -->
+        <record id="ir_cron_daily_attendance_digest" model="ir.cron">
+            <field name="name">Attendance: Send Daily Email Digest</field>
+            <field name="model_id" ref="model_infs_attendance_daily_digest"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_daily_attendance_report()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

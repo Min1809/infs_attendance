@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Daily Attendance Email Digest Template with Weekly Matrix -->
+        <record id="email_template_daily_attendance_digest" model="mail.template">
+            <field name="name">Daily Attendance Digest Notification</field>
+            <field name="model_id" ref="base.model_res_company"/>
+            <field name="subject">{{ ctx.get('company_name', 'Company') }}: Attendance Report - {{ ctx.get('subject_date', '') }}</field>
+            <field name="body_html"><![CDATA[
+<div style="margin: 0; padding: 20px; background-color: #f4f6f9; font-family: Arial, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 1050px; margin: 0 auto; background-color: #ffffff; border-radius: 4px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+
+        <!-- Header -->
+        <tr>
+            <td style="background-color: #714B67; padding: 24px 30px; text-align: center;">
+                <h1 style="margin: 0; color: #ffffff; font-size: 20px; letter-spacing: 0.5px;">Weekly Attendance Digest</h1>
+                <p style="margin: 6px 0 0 0; color: #d0e8ff; font-size: 13px;">
+                    Week: <t t-out="ctx.get('digest', {}).get('week_start_str', '')"/> to <t t-out="ctx.get('digest', {}).get('week_end_str', '')"/> • As of <t t-out="ctx.get('digest', {}).get('today_date_str', '')"/>
+                </p>
+            </td>
+        </tr>
+
+        <!-- Quick Summary Cards -->
+        <tr>
+            <td style="padding: 16px 25px 5px 25px;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+                    <tr>
+                        <td width="32%" style="padding: 8px; background-color: #e8f0fe; border-radius: 4px; text-align: center;">
+                            <span style="font-size: 11px; color: #555555; text-transform: uppercase; font-weight: bold;">Total Staff</span><br/>
+                            <strong style="font-size: 17px; color: #714B67;"><t t-out="ctx.get('digest', {}).get('total_employees', 0)"/></strong>
+                        </td>
+                        <td width="2%"></td>
+                        <td width="32%" style="padding: 8px; background-color: #e6f4ea; border-radius: 4px; text-align: center;">
+                            <span style="font-size: 11px; color: #137333; text-transform: uppercase; font-weight: bold;">Today Checked In</span><br/>
+                            <strong style="font-size: 17px; color: #137333;"><t t-out="ctx.get('digest', {}).get('today_checked_in', 0)"/></strong>
+                        </td>
+                        <td width="2%"></td>
+                        <td width="32%" style="padding: 8px; background-color: #fce8e6; border-radius: 4px; text-align: center;">
+                            <span style="font-size: 11px; color: #c5221f; text-transform: uppercase; font-weight: bold;">Missed Checkout</span><br/>
+                            <strong style="font-size: 17px; color: #c5221f;"><t t-out="ctx.get('digest', {}).get('yesterday_missed_checkout', 0)"/></strong>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <!-- Weekly Matrix Table -->
+        <tr>
+            <td style="padding: 10px 20px 20px 20px;">
+                <div style="overflow-x: auto; width: 100%;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border: 1.5px solid #000000; font-size: 12px; font-family: Arial, sans-serif;">
+                        
+                        <!-- Header Row 1: Day Names -->
+                        <thead>
+                            <tr style="background-color: #ffffff;">
+                                <th rowspan="3" style="border: 1px solid #000000; padding: 10px 8px; font-size: 13px; font-weight: bold; text-align: center; vertical-align: middle; min-width: 170px;">
+                                    Employee Name
+                                </th>
+                                <t t-foreach="ctx.get('digest', {}).get('week_days', [])" t-as="wday">
+                                    <th colspan="3" style="border: 1px solid #000000; padding: 6px 4px; font-size: 12px; font-weight: bold; text-align: center;">
+                                        <t t-out="wday['name']"/>
+                                    </th>
+                                </t>
+                            </tr>
+
+                            <!-- Header Row 2: Dates -->
+                            <tr style="background-color: #ffffff;">
+                                <t t-foreach="ctx.get('digest', {}).get('week_days', [])" t-as="wday">
+                                    <th colspan="3" style="border: 1px solid #000000; padding: 5px 4px; font-size: 11px; font-weight: bold; text-align: center; color: #111111;">
+                                        <t t-out="wday['date_str']"/>
+                                    </th>
+                                </t>
+                            </tr>
+
+                            <!-- Header Row 3: IN | OUT | HRS -->
+                            <tr style="background-color: #ffffff;">
+                                <t t-foreach="ctx.get('digest', {}).get('week_days', [])" t-as="wday">
+                                    <th style="border: 1px solid #000000; padding: 5px 3px; font-size: 11px; font-weight: bold; text-align: center; width: 38px;">IN</th>
+                                    <th style="border: 1px solid #000000; padding: 5px 3px; font-size: 11px; font-weight: bold; text-align: center; width: 38px;">OUT</th>
+                                    <th style="border: 1px solid #000000; padding: 5px 3px; font-size: 11px; font-weight: bold; text-align: center; width: 44px;">HRS</th>
+                                </t>
+                            </tr>
+                        </thead>
+
+                        <!-- Body: Employee Rows -->
+                        <tbody>
+                            <t t-foreach="ctx.get('digest', {}).get('employee_rows', [])" t-as="emp">
+                                <tr style="background-color: #ffffff;">
+                                    <td style="border: 1px solid #000000; padding: 6px 8px; font-size: 12px; color: #222222; text-align: left; font-weight: 500; white-space: nowrap;">
+                                        <t t-out="emp['name']"/>
+                                    </td>
+                                    <t t-foreach="emp['days']" t-as="d">
+                                        <td t-attf-style="border: 1px solid #000000; padding: 5px 2px; font-size: 11px; text-align: center; color: {{ d['in_color'] }}; font-family: monospace, Arial, sans-serif;">
+                                            <t t-out="d['in']"/>
+                                        </td>
+                                        <td t-attf-style="border: 1px solid #000000; padding: 5px 2px; font-size: 11px; text-align: center; color: {{ d['out_color'] }}; font-family: monospace, Arial, sans-serif;">
+                                            <t t-out="d['out']"/>
+                                        </td>
+                                        <td t-attf-style="border: 1px solid #000000; padding: 5px 2px; font-size: 11px; text-align: center; font-weight: bold; color: {{ d['hrs_color'] }}; font-family: monospace, Arial, sans-serif;">
+                                            <t t-out="d['hrs']"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+
+        <!-- CTA Button -->
+        <tr>
+            <td style="padding: 15px 30px 25px 30px; text-align: center;">
+                <a t-att-href="ctx.get('digest', {}).get('weekly_report_url', '#')"
+                   style="display: inline-block; background-color: #714B67; color: #ffffff; text-decoration: none; padding: 12px 32px; border-radius: 4px; font-size: 13px; font-weight: bold; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                    Open Weekly Attendance Report in Odoo &#8594;
+                </a>
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td style="background-color: #f4f6f9; padding: 14px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
+                <p style="margin: 0; font-size: 11px; color: #aaaaaa;">This email is automatically generated by <t t-out="ctx.get('company_name', 'Odoo')"/> ERP. Please do not reply to this email.</p>
+            </td>
+        </tr>
+
+    </table>
+</div>
+            ]]></field>
+        </record>
+    </data>
+</odoo>

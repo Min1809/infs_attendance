@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_infs_attendance_weekly_report_manager,infs.attendance.weekly.report.manager,model_infs_attendance_weekly_report,hr_attendance.group_hr_attendance_manager,1,1,1,1
+access_infs_attendance_weekly_viewer_manager,infs.attendance.weekly.report.viewer.manager,model_infs_attendance_weekly_report_viewer,hr_attendance.group_hr_attendance_manager,1,1,1,1
+access_infs_attendance_daily_digest_manager,infs.attendance.daily.digest.manager,model_infs_attendance_daily_digest,hr_attendance.group_hr_attendance_manager,1,1,1,1
