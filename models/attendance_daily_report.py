@@ -73,9 +73,8 @@ class InfsAttendanceDailyDigest(models.TransientModel):
                 'is_today': (d == today_date),
             })
 
-        employees = self.env['hr.employee'].search([
-            ('active', '=', True),
-            ('company_id', '=', company.id)
+        employees = self.env['hr.employee'].sudo().search([
+            ('active', '=', True)
         ], order='department_id, name')
 
         # Time range in UTC for the entire week
@@ -84,7 +83,7 @@ class InfsAttendanceDailyDigest(models.TransientModel):
         week_start_utc = week_start_local.astimezone(pytz.utc).replace(tzinfo=None)
         week_end_utc = week_end_local.astimezone(pytz.utc).replace(tzinfo=None)
 
-        week_attendances = self.env['hr.attendance'].search([
+        week_attendances = self.env['hr.attendance'].sudo().search([
             ('employee_id', 'in', employees.ids),
             ('check_in', '>=', week_start_utc),
             ('check_in', '<=', week_end_utc),

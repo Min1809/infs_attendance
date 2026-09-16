@@ -82,14 +82,15 @@ class InfsAttendanceWeeklyReport(models.Model):
         tz_name = self.env.user.tz or self.env.company.partner_id.tz or 'Asia/Bangkok'
         local_tz = pytz.timezone(tz_name)
 
-        employees = self.env['hr.employee'].search([('active', '=', True)], order='department_id, name')
+        employees = self.env['hr.employee'].sudo().search([('active', '=', True)], order='department_id, name')
 
         start_local = local_tz.localize(datetime.datetime.combine(sun_date, datetime.time.min))
         end_local = local_tz.localize(datetime.datetime.combine(sat_date, datetime.time.max))
         start_utc = start_local.astimezone(pytz.utc).replace(tzinfo=None)
         end_utc = end_local.astimezone(pytz.utc).replace(tzinfo=None)
 
-        attendances = self.env['hr.attendance'].search([
+        attendances = self.env['hr.attendance'].sudo().search([
+            ('employee_id', 'in', employees.ids),
             ('check_in', '>=', start_utc),
             ('check_in', '<=', end_utc),
         ], order='check_in asc')
@@ -255,11 +256,11 @@ class InfsAttendanceWeeklyReportViewer(models.TransientModel):
                     'is_weekend': (i == 0 or i == 6),
                 })
 
-            domain = [('active', '=', True), ('company_id', '=', rec.env.company.id)]
+            domain = [('active', '=', True)]
             if rec.department_id:
                 domain.append(('department_id', '=', rec.department_id.id))
 
-            employees = rec.env['hr.employee'].search(domain, order='department_id, name')
+            employees = rec.env['hr.employee'].sudo().search(domain, order='department_id, name')
             rec.total_employees = len(employees)
 
             week_start_local = local_tz.localize(datetime.datetime.combine(sun_date, datetime.time.min))
@@ -267,7 +268,7 @@ class InfsAttendanceWeeklyReportViewer(models.TransientModel):
             week_start_utc = week_start_local.astimezone(pytz.utc).replace(tzinfo=None)
             week_end_utc = week_end_local.astimezone(pytz.utc).replace(tzinfo=None)
 
-            attendances = rec.env['hr.attendance'].search([
+            attendances = rec.env['hr.attendance'].sudo().search([
                 ('employee_id', 'in', employees.ids),
                 ('check_in', '>=', week_start_utc),
                 ('check_in', '<=', week_end_utc),
